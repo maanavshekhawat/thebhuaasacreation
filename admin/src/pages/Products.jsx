@@ -12,10 +12,18 @@ const Products = () => {
     fetchProducts()
   }, [])
 
+  const getImageUrl = (imageUrl) => {
+    if (!imageUrl) return null
+    if (imageUrl.startsWith('http')) return imageUrl
+    const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
+    return `${backendUrl.replace('/api', '')}${imageUrl}`
+  }
+
   const fetchProducts = async () => {
     try {
       const token = localStorage.getItem('adminToken')
-      const response = await axios.get('/api/products', {
+      const API_URL = import.meta.env.VITE_API_URL || '/api'
+      const response = await axios.get(`${API_URL}/products`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       setProducts(response.data)
@@ -31,7 +39,8 @@ const Products = () => {
 
     try {
       const token = localStorage.getItem('adminToken')
-      await axios.delete(`/api/admin/products/${id}`, {
+      const API_URL = import.meta.env.VITE_API_URL || '/api'
+      await axios.delete(`${API_URL}/admin/products/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       fetchProducts()
@@ -93,11 +102,7 @@ const Products = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         {product.imageUrl && !imageErrors.has(product.id) ? (
                           <img
-                            src={
-                              product.imageUrl.startsWith('http') 
-                                ? product.imageUrl 
-                                : `http://localhost:8080${product.imageUrl}`
-                            }
+                            src={getImageUrl(product.imageUrl) || ''}
                             alt={product.name}
                             className="h-16 w-16 object-cover rounded-lg"
                             onError={() => {

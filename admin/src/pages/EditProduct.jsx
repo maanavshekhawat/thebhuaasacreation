@@ -23,6 +23,13 @@ const EditProduct = () => {
   const [uploadingFile, setUploadingFile] = useState(false)
   const [selectedFile, setSelectedFile] = useState(null)
 
+  const getImageUrl = (imageUrl) => {
+    if (!imageUrl) return null
+    if (imageUrl.startsWith('http')) return imageUrl
+    const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
+    return `${backendUrl.replace('/api', '')}${imageUrl}`
+  }
+
   useEffect(() => {
     fetchProduct()
   }, [id])
@@ -30,7 +37,8 @@ const EditProduct = () => {
   const fetchProduct = async () => {
     try {
       const token = localStorage.getItem('adminToken')
-      const response = await axios.get(`/api/products/${id}`, {
+      const API_URL = import.meta.env.VITE_API_URL || '/api'
+      const response = await axios.get(`${API_URL}/products/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       const productData = {
@@ -139,7 +147,8 @@ const EditProduct = () => {
       const formData = new FormData()
       formData.append('file', file)
 
-      const response = await axios.post('/api/upload/image', formData, {
+      const API_URL = import.meta.env.VITE_API_URL || '/api'
+      const response = await axios.post(`${API_URL}/upload/image`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -180,8 +189,9 @@ const EditProduct = () => {
 
     try {
       const token = localStorage.getItem('adminToken')
+      const API_URL = import.meta.env.VITE_API_URL || '/api'
       await axios.put(
-        `/api/admin/products/${id}`,
+        `${API_URL}/admin/products/${id}`,
         {
           ...formData,
           price: parseFloat(formData.price),

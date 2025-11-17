@@ -16,8 +16,9 @@ const Dashboard = () => {
   const fetchStats = async () => {
     try {
       const token = localStorage.getItem('adminToken')
+      const API_URL = import.meta.env.VITE_API_URL || '/api'
       const [productsRes] = await Promise.all([
-        axios.get('/api/products', {
+        axios.get(`${API_URL}/products`, {
           headers: { Authorization: `Bearer ${token}` }
         })
       ])

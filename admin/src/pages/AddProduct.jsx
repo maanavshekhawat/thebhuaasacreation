@@ -21,6 +21,13 @@ const AddProduct = () => {
   const [uploadingFile, setUploadingFile] = useState(false)
   const [selectedFile, setSelectedFile] = useState(null)
 
+  const getImageUrl = (imageUrl) => {
+    if (!imageUrl) return null
+    if (imageUrl.startsWith('http')) return imageUrl
+    const backendUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080'
+    return `${backendUrl.replace('/api', '')}${imageUrl}`
+  }
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -102,7 +109,8 @@ const AddProduct = () => {
       const formData = new FormData()
       formData.append('file', file)
 
-      const response = await axios.post('/api/upload/image', formData, {
+      const API_URL = import.meta.env.VITE_API_URL || '/api'
+      const response = await axios.post(`${API_URL}/upload/image`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
@@ -143,8 +151,9 @@ const AddProduct = () => {
 
     try {
       const token = localStorage.getItem('adminToken')
+      const API_URL = import.meta.env.VITE_API_URL || '/api'
       await axios.post(
-        '/api/admin/products',
+        `${API_URL}/admin/products`,
         {
           ...formData,
           price: parseFloat(formData.price),
@@ -371,7 +380,7 @@ const AddProduct = () => {
                   <p className="text-xs text-gray-600 mb-2">Image Preview:</p>
                   <div className="border-2 border-gray-200 rounded-lg p-2 bg-gray-50">
                     <img
-                      src={formData.imageUrl.startsWith('http') ? formData.imageUrl : `http://localhost:8080${formData.imageUrl}`}
+                      src={getImageUrl(formData.imageUrl) || ''}
                       alt="Preview"
                       className="max-w-full h-48 object-contain mx-auto rounded"
                       onError={(e) => {
