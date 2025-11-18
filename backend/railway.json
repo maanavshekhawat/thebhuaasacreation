@@ -4,7 +4,7 @@
     "builder": "NIXPACKS"
   },
   "deploy": {
-    "startCommand": "mvn clean package -DskipTests && java -Xmx512m -Xms256m -jar target/ecommerce-backend-1.0.0.jar",
+    "startCommand": "java -Xmx512m -Xms256m -jar target/ecommerce-backend-1.0.0.jar",
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
   }
