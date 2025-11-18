@@ -40,14 +40,9 @@ public class SecurityConfig {
         if (allowedOrigins != null && !allowedOrigins.isEmpty()) {
             configuration.setAllowedOrigins(Arrays.asList(allowedOrigins.split(",")));
         } else {
-            // Default: allow localhost and common production patterns
-            configuration.setAllowedOrigins(Arrays.asList(
-                "http://localhost:3000", 
-                "http://localhost:3001",
-                "https://*.vercel.app",
-                "https://*.netlify.app",
-                "https://*.railway.app"
-            ));
+            // Default: allow all origins for now (can be restricted later)
+            // This allows Vercel, Netlify, and any other frontend
+            configuration.setAllowedOriginPatterns(Arrays.asList("*"));
         }
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
